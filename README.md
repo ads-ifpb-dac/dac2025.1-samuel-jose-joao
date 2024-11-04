@@ -10,7 +10,6 @@ Esse repositório contém código e configurações base para as atividades/proj
 Ao fazer o clone do repositório, abra o terminal no diretório do projeto e execute os comandos linha por linha.
 
 ```bash
-docker compose up 
 ./mvnw clean
 ./mvnw install
 ./mvnw spring-boot:run
