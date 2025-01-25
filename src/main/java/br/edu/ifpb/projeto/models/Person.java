@@ -16,7 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
-public class  User implements Serializable {
+public class Person implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

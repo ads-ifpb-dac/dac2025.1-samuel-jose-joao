@@ -23,7 +23,7 @@ public class Ticket implements Serializable {
     private Event event;
 
     @ManyToOne
-    private User owner;
+    private Person owner;
 
     @ManyToOne
     private EventInfo eventDate;

@@ -1,6 +1,6 @@
 services:
   dac:
-    image: postgres:latest
+    image: postgres:16
     container_name: dac
     restart: always
     environment:
@@ -8,4 +8,4 @@ services:
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: tickets
     ports:
-      - "5433:5432"
+      - "5432:5432"
