@@ -1,16 +1,11 @@
 services:
-  database:
-    image: postgres:12-alpine
-    container_name: dac_db
+  dac:
+    image: postgres:latest
+    container_name: dac
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: dac
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: tickets
     ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-volumes:
-  pgdata:
+      - "5433:5432"

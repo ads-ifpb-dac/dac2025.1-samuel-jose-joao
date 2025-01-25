@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>br.edu.ifpb</groupId>
-    <artifactId>exemplos-jpa</artifactId>
+    <artifactId>projeto</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>exemplos-jpa</name>
-    <description>exemplos-jpa</description>
+    <name>projeto</name>
+    <description>projeto</description>
     <url/>
     <licenses>
         <license/>
@@ -58,6 +58,13 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
+        </dependency>
+
+        <!-- Dependências adicionadas pelo grupo -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 
