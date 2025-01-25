@@ -1,231 +1,248 @@
-create table if not exists event
-(
-    id          uuid not null
-    primary key,
-    capacity    integer,
-    description varchar(255),
-    name        varchar(255)
-    );
+-- Criação da tabela flyway_schema_history
+DROP TABLE IF EXISTS flyway_schema_history;
 
-alter table event
-    owner to postgres;
-
-create table if not exists event_info
-(
-    id          uuid not null
-    primary key,
-    address     varchar(255),
-    event_end   timestamp(6),
-    event_start timestamp(6)
-    );
-
-alter table event_info
-    owner to postgres;
-
-create table if not exists event_date
-(
-    event_id uuid not null
-    constraint fkqf8645cgwgppcgi8slidnmcsx
-    references event,
-    date_id  uuid not null
-    constraint uk5rdn9ebk5rg36k9qs9jqwvpt4
-    unique
-    constraint fko2dax173hhhjd7m5wei7fj9xp
-    references event_info
+CREATE TABLE IF NOT EXISTS flyway_schema_history (
+    installed_rank INTEGER NOT NULL PRIMARY KEY,
+    version VARCHAR(50),
+    description VARCHAR(200) NOT NULL,
+    type VARCHAR(20) NOT NULL,
+    script VARCHAR(1000) NOT NULL,
+    checksum INTEGER,
+    installed_by VARCHAR(100) NOT NULL,
+    installed_on TIMESTAMP DEFAULT now() NOT NULL,
+    execution_time INTEGER NOT NULL,
+    success BOOLEAN NOT NULL
 );
 
-alter table event_date
-    owner to postgres;
+ALTER TABLE flyway_schema_history
+    OWNER TO postgres;
 
-create table if not exists modality
-(
-    id   uuid not null
-    primary key,
-    type varchar(255)
-    );
+CREATE INDEX IF NOT EXISTS flyway_schema_history_s_idx
+    ON flyway_schema_history (success);
 
-alter table modality
-    owner to postgres;
-
-create table if not exists field
-(
-    id          uuid not null
-    primary key,
-    description varchar(255),
-    name        varchar(255),
-    type        varchar(255),
-    modality_id uuid
-    constraint fke47fa24ij40sf6du3qsf1pnxu
-    references modality,
-    response_id uuid
-    constraint ukcepldbksu3vk0we69yyv4tkxn
-    unique
-    );
-
-alter table field
-    owner to postgres;
-
-create table if not exists field_response
-(
-    id       uuid not null
-    primary key,
-    content  varchar(255),
-    field_id uuid
-    constraint uk2dklrm2cgbnayfhv41odw2xw3
-    unique
-    constraint fkmr41bw9nkleeencib5pnuhgdm
-    references field
-    );
-
-alter table field_response
-    owner to postgres;
-
-alter table field
-    add constraint fkpfxe6v47vrj3qkd3eai05ldwk
-        foreign key (response_id) references field_response;
-
-create table if not exists organizer
-(
-    id uuid not null
-    primary key
+-- Criação da tabela event
+CREATE TABLE IF NOT EXISTS event (
+   id UUID NOT NULL PRIMARY KEY,
+   capacity INTEGER,
+   description VARCHAR(255),
+   name VARCHAR(255)
 );
 
-alter table organizer
-    owner to postgres;
+ALTER TABLE event
+    OWNER TO postgres;
 
-create table if not exists event_organizers
-(
-    event_id      uuid not null
-    constraint fkjwljnmkgtwkdohqc5f3g7utdg
-    references event,
-    organizers_id uuid not null
-    constraint fk39gbn0fqkwf532r9rpvalfbpp
-    references organizer
+-- Criação da tabela event_info
+CREATE TABLE IF NOT EXISTS event_info (
+     id UUID NOT NULL PRIMARY KEY,
+     address VARCHAR(255),
+     event_end TIMESTAMP(6),
+     event_start TIMESTAMP(6)
 );
 
-alter table event_organizers
-    owner to postgres;
+ALTER TABLE event_info
+    OWNER TO postgres;
 
-create table if not exists organizer_events
-(
-    organizer_id uuid not null
-    constraint fks396jb4gy70ucl2nkeluat5id
-    references organizer,
-    events_id    uuid not null
-    constraint fkk3ri60bw2y54cpa7vpx7ptl39
-    references event
+-- Criação da tabela event_date
+CREATE TABLE IF NOT EXISTS event_date (
+   event_id UUID NOT NULL REFERENCES event,
+   date_id UUID NOT NULL UNIQUE REFERENCES event_info
 );
 
-alter table organizer_events
-    owner to postgres;
+ALTER TABLE event_date
+    OWNER TO postgres;
 
-create table if not exists ticket
-(
-    id            uuid not null
-    primary key,
-    event_id      uuid
-    constraint fkfytuhjopeamxbt1cpudy92x5n
-    references event,
-    event_date_id uuid
-    constraint fkh0ow2ndgtrka7wecakvsc9u3n
-    references event_info,
-    modality_id   uuid
-    constraint fk3toai7i0bg15cesdqvfxejec0
-    references modality,
-    owner_id      uuid
+-- Criação da tabela field_response
+CREATE TABLE IF NOT EXISTS field_response (
+   id UUID NOT NULL PRIMARY KEY,
+   content VARCHAR(255)
 );
 
-alter table ticket
-    owner to postgres;
+ALTER TABLE field_response
+    OWNER TO postgres;
 
-create table if not exists ticket_response_list
-(
-    ticket_id        uuid not null
-    constraint fktedyub9hhl0kmacr9pk2ex5ge
-    references ticket,
-    response_list_id uuid not null
-    constraint uksi91rey6avs0316j814de14eu
-    unique
-    constraint fk2dmn1lema414d16fdxytx8lav
-    references field_response
+-- Criação da tabela modality
+CREATE TABLE IF NOT EXISTS modality (
+   id UUID NOT NULL PRIMARY KEY,
+   type VARCHAR(255)
 );
 
-alter table ticket_response_list
-    owner to postgres;
+ALTER TABLE modality
+    OWNER TO postgres;
 
-create table if not exists ticket_package
-(
-    id   uuid not null
-    primary key,
-    type varchar(255)
-    );
-
-alter table ticket_package
-    owner to postgres;
-
-create table if not exists ticket_package_tickets
-(
-    ticket_package_id uuid not null
-    constraint fkopdbc41ne0o28qdo4y94fxrgr
-    references ticket_package,
-    tickets_id        uuid not null
-    constraint uk8a0ietj2tdg53r8bl1tikor4o
-    unique
-    constraint fksj20w112cub0vj0n8q2bg6tpi
-    references ticket
+-- Criação da tabela field
+CREATE TABLE IF NOT EXISTS field (
+   id UUID NOT NULL PRIMARY KEY,
+   description VARCHAR(255),
+   name VARCHAR(255),
+   type VARCHAR(255),
+   modality_id UUID REFERENCES modality,
+   response_id UUID UNIQUE REFERENCES field_response
 );
 
-alter table ticket_package_tickets
-    owner to postgres;
+ALTER TABLE field
+    OWNER TO postgres;
 
--- Insert into event table
-insert into event (id, capacity, description, name)
-values ('123e4567-e89b-12d3-a456-426614174000', 100, 'Show do Linking Park', 'Linking Park');
+-- Criação da tabela field_response_field
+CREATE TABLE IF NOT EXISTS field_response_field (
+   field_response_id UUID NOT NULL REFERENCES field_response,
+   field_id UUID NOT NULL UNIQUE REFERENCES field
+);
 
--- Insert into event_info table
-insert into event_info (id, address, event_end, event_start)
-values ('123e4567-e89b-12d3-a456-426614174001', 'Rio de Janeiro', '2023-12-31 23:59:59', '2023-12-31 18:00:00');
+ALTER TABLE field_response_field
+    OWNER TO postgres;
 
--- Insert into event_date table
-insert into event_date (event_id, date_id)
-values ('123e4567-e89b-12d3-a456-426614174000', '123e4567-e89b-12d3-a456-426614174001');
+-- Criação da tabela organizer
+CREATE TABLE IF NOT EXISTS organizer (
+   id UUID NOT NULL PRIMARY KEY
+);
 
--- Insert into modality table
-insert into modality (id, type)
-values ('123e4567-e89b-12d3-a456-426614174002', 'Estudante');
+ALTER TABLE organizer
+    OWNER TO postgres;
 
--- Insert into field table
-insert into field (id, description, name, type, modality_id, response_id)
-values ('123e4567-e89b-12d3-a456-426614174003', 'Matrícula para universitários', 'Matrícula', 'Modalidade', '123e4567-e89b-12d3-a456-426614174002', '123e4567-e89b-12d3-a456-426614174004');
+-- Criação da tabela event_organizers
+CREATE TABLE IF NOT EXISTS event_organizers (
+    event_id UUID NOT NULL REFERENCES event,
+    organizers_id UUID NOT NULL REFERENCES organizer
+);
 
--- Insert into field_response table
-insert into field_response (id, content, field_id)
-values ('123e4567-e89b-12d3-a456-426614174004', '2021220012234', '123e4567-e89b-12d3-a456-426614174003');
+ALTER TABLE event_organizers
+    OWNER TO postgres;
 
--- Insert into organizer table
-insert into organizer (id)
-values ('123e4567-e89b-12d3-a456-426614174005');
+-- Criação da tabela organizer_events
+CREATE TABLE IF NOT EXISTS organizer_events (
+   organizer_id UUID NOT NULL REFERENCES organizer,
+   events_id UUID NOT NULL REFERENCES event
+);
 
--- Insert into event_organizers table
-insert into event_organizers (event_id, organizers_id)
-values ('123e4567-e89b-12d3-a456-426614174000', '123e4567-e89b-12d3-a456-426614174005');
+ALTER TABLE organizer_events
+    OWNER TO postgres;
 
--- Insert into organizer_events table
-insert into organizer_events (organizer_id, events_id)
-values ('123e4567-e89b-12d3-a456-426614174005', '123e4567-e89b-12d3-a456-426614174000');
+-- Criação da tabela ticket
+CREATE TABLE IF NOT EXISTS ticket (
+     id UUID NOT NULL PRIMARY KEY,
+     event_id UUID REFERENCES event,
+     event_date_id UUID REFERENCES event_info,
+     modality_id UUID REFERENCES modality,
+     owner_id UUID
+);
 
--- Insert into ticket table
-insert into ticket (id, event_id, event_date_id, modality_id, owner_id)
-values ('123e4567-e89b-12d3-a456-426614174006', '123e4567-e89b-12d3-a456-426614174000', '123e4567-e89b-12d3-a456-426614174001', '123e4567-e89b-12d3-a456-426614174002', '123e4567-e89b-12d3-a456-426614174007');
+ALTER TABLE ticket
+    OWNER TO postgres;
 
--- Insert into ticket_response_list table
-insert into ticket_response_list (ticket_id, response_list_id)
-values ('123e4567-e89b-12d3-a456-426614174006', '123e4567-e89b-12d3-a456-426614174004');
+-- Criação da tabela ticket_response_list
+CREATE TABLE IF NOT EXISTS ticket_response_list (
+   ticket_id UUID NOT NULL REFERENCES ticket,
+   response_list_id UUID NOT NULL UNIQUE REFERENCES field_response
+);
 
--- Insert into ticket_package table
-insert into ticket_package (id, type)
-values ('123e4567-e89b-12d3-a456-426614174008', 'Estudante');
+ALTER TABLE ticket_response_list
+    OWNER TO postgres;
 
--- Insert into ticket_package_tickets table
-insert into ticket_package_tickets (ticket_package_id, tickets_id)
-values ('123e4567-e89b-12d3-a456-426614174008', '123e4567-e89b-12d3-a456-426614174006');
+-- Criação da tabela ticket_package
+CREATE TABLE IF NOT EXISTS ticket_package (
+   id UUID NOT NULL PRIMARY KEY,
+   type VARCHAR(255)
+);
+
+ALTER TABLE ticket_package
+    OWNER TO postgres;
+
+-- Criação da tabela ticket_package_tickets
+CREATE TABLE IF NOT EXISTS ticket_package_tickets (
+    ticket_package_id UUID NOT NULL REFERENCES ticket_package,
+    tickets_id UUID NOT NULL UNIQUE REFERENCES ticket
+);
+
+ALTER TABLE ticket_package_tickets
+    OWNER TO postgres;
+
+
+-- Inserindo dados na tabela flyway_schema_history
+INSERT INTO flyway_schema_history (installed_rank, version, description, type, script, checksum, installed_by, installed_on, execution_time, success)
+VALUES
+    (1, '1.0', 'Inicialização do banco de dados', 'SQL', 'V1__init_schema.sql', 123456, 'admin', now(), 100, true),
+    (2, '1.1', 'Alteração do esquema para adicionar nova tabela', 'SQL', 'V2__add_new_table.sql', 654321, 'admin', now(), 120, true);
+
+-- Inserindo dados na tabela event
+INSERT INTO event (id, capacity, description, name)
+VALUES
+    ('b8f8f7c7-dfcb-4c67-9c1f-1d531e6fcb56', 200, 'Evento de Tecnologia', 'Tech Conference'),
+    ('5b96bb68-b6b2-4a0f-bb8a-dfcd35a7b4db', 500, 'Evento de Música', 'Music Festival');
+
+-- Inserindo dados na tabela event_info
+INSERT INTO event_info (id, address, event_end, event_start)
+VALUES
+    ('dc4316f0-cf47-433b-91d9-8b8a527f9d59', 'Rua 123, São Paulo, SP', '2025-02-01 18:00:00', '2025-02-01 08:00:00'),
+    ('b278f65c-6e8d-4fae-bde0-980b48151235', 'Avenida Central, Rio de Janeiro, RJ', '2025-03-15 20:00:00', '2025-03-15 10:00:00');
+
+-- Inserindo dados na tabela event_date
+INSERT INTO event_date (event_id, date_id)
+VALUES
+    ('b8f8f7c7-dfcb-4c67-9c1f-1d531e6fcb56', 'dc4316f0-cf47-433b-91d9-8b8a527f9d59'),
+    ('5b96bb68-b6b2-4a0f-bb8a-dfcd35a7b4db', 'b278f65c-6e8d-4fae-bde0-980b48151235');
+
+-- Inserindo dados na tabela field_response
+INSERT INTO field_response (id, content)
+VALUES
+    ('7ac8f6b4-5d61-44e6-8fcb-8c7d2b477d67', 'Resposta 1'),
+    ('e3d973fc-cab5-4a60-a788-b2de5a2a7e69', 'Resposta 2');
+
+-- Inserindo dados na tabela modality
+INSERT INTO modality (id, type)
+VALUES
+    ('90217a76-7b77-4f60-8b58-12e74b647320', 'Virtual'),
+    ('e60d4268-9fcf-4c4a-b831-8b378e320ab0', 'Presencial');
+
+-- Inserindo dados na tabela field
+INSERT INTO field (id, description, name, type, modality_id, response_id)
+VALUES
+    ('5b28dcbf-bd87-49fc-a72f-d8cbf120682d', 'Campo de inscrição', 'Inscrição', 'Texto', '90217a76-7b77-4f60-8b58-12e74b647320', '7ac8f6b4-5d61-44e6-8fcb-8c7d2b477d67'),
+    ('69e7b421-b16f-44c5-b271-4f62fe8ff9c5', 'Campo de feedback', 'Feedback', 'Texto', 'e60d4268-9fcf-4c4a-b831-8b378e320ab0', 'e3d973fc-cab5-4a60-a788-b2de5a2a7e69');
+
+-- Inserindo dados na tabela field_response_field
+INSERT INTO field_response_field (field_response_id, field_id)
+VALUES
+    ('7ac8f6b4-5d61-44e6-8fcb-8c7d2b477d67', '5b28dcbf-bd87-49fc-a72f-d8cbf120682d'),
+    ('e3d973fc-cab5-4a60-a788-b2de5a2a7e69', '69e7b421-b16f-44c5-b271-4f62fe8ff9c5');
+
+-- Inserindo dados na tabela organizer
+INSERT INTO organizer (id)
+VALUES
+    ('bb5f3e62-3d0f-4aaf-a9d7-9d510bf2a30f'),
+    ('7f348d99-ff57-4e16-b5a9-e7a4c5d981d6');
+
+-- Inserindo dados na tabela event_organizers
+INSERT INTO event_organizers (event_id, organizers_id)
+VALUES
+    ('b8f8f7c7-dfcb-4c67-9c1f-1d531e6fcb56', 'bb5f3e62-3d0f-4aaf-a9d7-9d510bf2a30f'),
+    ('5b96bb68-b6b2-4a0f-bb8a-dfcd35a7b4db', '7f348d99-ff57-4e16-b5a9-e7a4c5d981d6');
+
+-- Inserindo dados na tabela organizer_events
+INSERT INTO organizer_events (organizer_id, events_id)
+VALUES
+    ('bb5f3e62-3d0f-4aaf-a9d7-9d510bf2a30f', 'b8f8f7c7-dfcb-4c67-9c1f-1d531e6fcb56'),
+    ('7f348d99-ff57-4e16-b5a9-e7a4c5d981d6', '5b96bb68-b6b2-4a0f-bb8a-dfcd35a7b4db');
+
+-- Inserindo dados na tabela ticket
+INSERT INTO ticket (id, event_id, event_date_id, modality_id, owner_id)
+VALUES
+    ('f8b99c6e-5380-4512-b36c-4cd4d8b6e2f3', 'b8f8f7c7-dfcb-4c67-9c1f-1d531e6fcb56', 'dc4316f0-cf47-433b-91d9-8b8a527f9d59', '90217a76-7b77-4f60-8b58-12e74b647320', 'a87d58b6-1b87-4f16-9f6f-357bde85b7f2'),
+    ('d396b1b9-bbbc-49e1-98a0-b39fca9c0a17', '5b96bb68-b6b2-4a0f-bb8a-dfcd35a7b4db', 'b278f65c-6e8d-4fae-bde0-980b48151235', 'e60d4268-9fcf-4c4a-b831-8b378e320ab0', '73d4c1d1-d149-4288-b7ba-20ac8ccac4a2');
+
+-- Inserindo dados na tabela ticket_response_list
+INSERT INTO ticket_response_list (ticket_id, response_list_id)
+VALUES
+    ('f8b99c6e-5380-4512-b36c-4cd4d8b6e2f3', '7ac8f6b4-5d61-44e6-8fcb-8c7d2b477d67'),
+    ('d396b1b9-bbbc-49e1-98a0-b39fca9c0a17', 'e3d973fc-cab5-4a60-a788-b2de5a2a7e69');
+
+-- Inserindo dados na tabela ticket_package
+INSERT INTO ticket_package (id, type)
+VALUES
+    ('71b4a6cf-b420-4fba-9c91-dfa771b67616', 'VIP'),
+    ('32f33264-5b33-4765-9a74-5f0c51e746c8', 'Padrão');
+
+-- Inserindo dados na tabela ticket_package_tickets
+INSERT INTO ticket_package_tickets (ticket_package_id, tickets_id)
+VALUES
+    ('71b4a6cf-b420-4fba-9c91-dfa771b67616', 'f8b99c6e-5380-4512-b36c-4');
+
