@@ -21,7 +21,7 @@ public class FieldResponse implements Serializable {
 
     private String content;
 
-    @OneToMany
-    private List<Field> field;
+    @ManyToOne
+    private Field field;
 
 }

@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -27,9 +28,7 @@ public class Field implements Serializable {
     @ManyToOne
     private Modality modality;
 
-    @OneToOne
-    private FieldResponse response;
-
-
+    @OneToMany(mappedBy = "field")
+    private List<FieldResponse> fieldResponses;
 
 }
