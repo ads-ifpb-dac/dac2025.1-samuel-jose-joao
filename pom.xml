@@ -60,6 +60,12 @@
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
 
+        <!-- Spring Web-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+
         <!-- Dependências adicionadas pelo grupo -->
         <dependency>
             <groupId>org.projectlombok</groupId>
