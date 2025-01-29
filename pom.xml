@@ -66,6 +66,11 @@
             <artifactId>spring-web</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
         <!-- Dependências adicionadas pelo grupo -->
         <dependency>
             <groupId>org.projectlombok</groupId>
