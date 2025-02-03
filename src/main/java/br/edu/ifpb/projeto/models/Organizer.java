@@ -1,5 +1,6 @@
 package br.edu.ifpb.projeto.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class Organizer implements Serializable {
     private UUID id;
 
     @ManyToMany
+    @JsonIgnore
     private List<Event> events;
 
 }

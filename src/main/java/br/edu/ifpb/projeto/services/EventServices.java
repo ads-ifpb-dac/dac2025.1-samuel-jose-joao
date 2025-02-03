@@ -1,7 +1,7 @@
 package br.edu.ifpb.projeto.services;
 
 import br.edu.ifpb.projeto.models.Event;
-import br.edu.ifpb.projeto.repositories.EventRepositorie;
+import br.edu.ifpb.projeto.repositories.EventRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,31 +10,31 @@ import java.util.UUID;
 
 @Service
 public class EventServices {
-    private EventRepositorie eventRepositorie;
+    private EventRepository eventRepository;
 
-    public EventServices(EventRepositorie eventRepositorie) {
-        this.eventRepositorie = eventRepositorie;
+    public EventServices(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
     }
 
     public Event save(Event event) {
-        eventRepositorie.save(event);
+        eventRepository.save(event);
         return event;
     }
 
     public List<Event> findAll() {
-        return eventRepositorie.findAll();
+        return eventRepository.findAll();
     }
 
     public Optional<Event> findById(UUID id) {
-        return eventRepositorie.findById(id);
+        return eventRepository.findById(id);
     }
 
     public void update(Event event) {
-        eventRepositorie.save(event);
+        eventRepository.save(event);
     }
 
     public void delete(UUID id) {
-        eventRepositorie.deleteById(id);
+        eventRepository.deleteById(id);
     }
 
 }
