@@ -3,6 +3,7 @@ package br.edu.ifpb.projeto.controllers;
 import br.edu.ifpb.projeto.dtos.EventDTO;
 import br.edu.ifpb.projeto.models.Event;
 import br.edu.ifpb.projeto.services.EventServices;
+import br.edu.ifpb.projeto.utils.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,7 @@ public class EventController {
     @PutMapping("/{id}")
     public ResponseEntity<Event> updateEvent(@PathVariable UUID id, @RequestBody EventDTO eventDTO) {
         var event = eventServices.findById(id);
-        BeanUtils.copyProperties(eventDTO, event);
+        BeanUtils.copyProperties(eventDTO, event, ObjectUtils.getNullPropertyNames(eventDTO));
         eventServices.update(event);
         return ResponseEntity.ok(event);
     }

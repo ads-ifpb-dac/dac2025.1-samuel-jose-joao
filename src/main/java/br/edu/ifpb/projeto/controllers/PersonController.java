@@ -4,6 +4,7 @@ package br.edu.ifpb.projeto.controllers;
 import br.edu.ifpb.projeto.dtos.PersonDTO;
 import br.edu.ifpb.projeto.models.Person;
 import br.edu.ifpb.projeto.services.PersonServices;
+import br.edu.ifpb.projeto.utils.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +43,7 @@ public class PersonController {
     @PutMapping("/{id}")
     public ResponseEntity<Person> updatePerson(@PathVariable UUID id, @RequestBody PersonDTO personDetails) {
         var person = personServices.findById(id);
-        BeanUtils.copyProperties(personDetails, person);
+        BeanUtils.copyProperties(personDetails, person, ObjectUtils.getNullPropertyNames(personDetails));
         personServices.save(person);
         return ResponseEntity.ok(person);
     }
