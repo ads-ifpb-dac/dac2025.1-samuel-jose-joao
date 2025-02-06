@@ -1,8 +1,10 @@
 package br.edu.ifpb.projeto.controllers;
 
 
+import br.edu.ifpb.projeto.dtos.PersonDTO;
 import br.edu.ifpb.projeto.models.Person;
 import br.edu.ifpb.projeto.services.PersonServices;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +17,7 @@ import java.util.UUID;
 @RequestMapping("/api/persons")
 public class PersonController {
 
-    private PersonServices personServices;
+    private final PersonServices personServices;
 
     public PersonController(PersonServices personServices) {
         this.personServices = personServices;
@@ -34,29 +36,15 @@ public class PersonController {
 
     @GetMapping("/{id}")
     public Person getPersonById(@PathVariable UUID id) {
-        Optional<Person> person = Optional.ofNullable(personServices.findById(id));
-        return person.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build()).getBody();
+        return personServices.findById(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Person> updatePerson(@PathVariable UUID id, @RequestBody Person personDetails) {
-        Optional<Person> personOptional = Optional.ofNullable(personServices.findById(id));
-
-        if (personOptional.isPresent()) {
-            Person person = personOptional.get();
-
-            person.setName(personDetails.getName());
-            person.setEmail(personDetails.getEmail());
-            person.setPassword(personDetails.getPassword());
-            person.setCpf(personDetails.getCpf());
-            person.setBirthday(personDetails.getBirthday());
-
-            Person updatedPerson = personServices.update(person);
-
-            return ResponseEntity.ok(updatedPerson);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<Person> updatePerson(@PathVariable UUID id, @RequestBody PersonDTO personDetails) {
+        var person = personServices.findById(id);
+        BeanUtils.copyProperties(personDetails, person);
+        personServices.save(person);
+        return ResponseEntity.ok(person);
     }
 
     @DeleteMapping("/{id}")

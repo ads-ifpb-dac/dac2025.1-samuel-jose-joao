@@ -34,8 +34,7 @@ public class OrganizerController {
 
     @GetMapping("/{id}")
     public Organizer getOrganizerById(@PathVariable UUID id) {
-        Optional<Organizer> person = Optional.ofNullable(organizerServices.findById(id));
-        return person.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build()).getBody();
+        return organizerServices.findById(id);
     }
 
     // PRECISA IMPLEMENTAR O PUT
