@@ -29,10 +29,6 @@ public class EventServices implements GenericCRUDService<Event> {
         return eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(id));
     }
 
-    public Event update(Event event) {
-        return eventRepository.save(event);
-    }
-
     public void delete(Event entity) {
         eventRepository.delete(entity);
     }

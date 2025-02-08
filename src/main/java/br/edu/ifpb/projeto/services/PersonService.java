@@ -31,11 +31,6 @@ public class PersonServices implements GenericCRUDService<Person> {
         return this.personRepository.findById(id).orElseThrow(() -> new PersonNotFoundException(id));
     }
 
-    public Person update(Person person) {
-        this.personRepository.save(person);
-        return person;
-    }
-
     public void delete(Person person) {
         this.personRepository.delete(person);
     }

@@ -30,10 +30,6 @@ public class OrganizerServices implements GenericCRUDService<Organizer> {
         return this.organizerRepository.findById(id).orElseThrow(() -> new OrganizerNotFoundException(id));
     }
 
-    public Organizer update(Organizer organizer) {
-        return this.organizerRepository.save(organizer);
-    }
-
     public void delete(Organizer person) {
         this.organizerRepository.delete(person);
     }
