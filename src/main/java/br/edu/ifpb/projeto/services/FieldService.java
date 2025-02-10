@@ -4,16 +4,17 @@ import br.edu.ifpb.projeto.exceptions.FieldNotFoundException;
 import br.edu.ifpb.projeto.models.Field;
 import br.edu.ifpb.projeto.repositories.FieldRepository;
 import br.edu.ifpb.projeto.utils.GenericCRUDService;
-import org.hibernate.ObjectNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
-public class FildService implements GenericCRUDService<Field> {
+@Service
+public class FieldService implements GenericCRUDService<Field> {
 
     private final FieldRepository fieldRepository;
 
-    public FildService(FieldRepository fieldRepository) {
+    public FieldService(FieldRepository fieldRepository) {
         this.fieldRepository = fieldRepository;
     }
 
@@ -32,10 +33,6 @@ public class FildService implements GenericCRUDService<Field> {
         return this.fieldRepository.save(entity);
     }
 
-    @Override
-    public Field update(Field entity) {
-        return this.fieldRepository.save(entity);
-    }
 
     @Override
     public void delete(Field entity) {

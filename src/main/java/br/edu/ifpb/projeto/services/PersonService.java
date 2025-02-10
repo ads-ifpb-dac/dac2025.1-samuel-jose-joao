@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class PersonServices implements GenericCRUDService<Person> {
+public class PersonService implements GenericCRUDService<Person> {
 
     private final PersonRepository personRepository;
 
-    public PersonServices(PersonRepository personRepository) {
+    public PersonService(PersonRepository personRepository) {
         this.personRepository = personRepository;
     }
 

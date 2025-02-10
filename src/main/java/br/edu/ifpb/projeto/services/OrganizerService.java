@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class OrganizerServices implements GenericCRUDService<Organizer> {
+public class OrganizerService implements GenericCRUDService<Organizer> {
 
     private final OrganizerRepository organizerRepository;
 
-    public OrganizerServices(OrganizerRepository organizerRepository) {
+    public OrganizerService(OrganizerRepository organizerRepository) {
         this.organizerRepository = organizerRepository;
     }
 

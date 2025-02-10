@@ -1,13 +1,12 @@
 package br.edu.ifpb.projeto.controllers;
 
 import br.edu.ifpb.projeto.models.Organizer;
-import br.edu.ifpb.projeto.services.OrganizerServices;
+import br.edu.ifpb.projeto.services.OrganizerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 
@@ -15,33 +14,33 @@ import java.util.UUID;
 @RequestMapping("/api/organizers")
 public class OrganizerController {
 
-    private OrganizerServices organizerServices;
+    private OrganizerService organizerService;
 
-    public OrganizerController(OrganizerServices organizerServices) {
-        this.organizerServices = organizerServices;
+    public OrganizerController(OrganizerService organizerService) {
+        this.organizerService = organizerService;
     }
 
     @PostMapping
     public ResponseEntity<Organizer> saveOrganizers(@RequestBody Organizer organizer) {
-        Organizer savedOrganizer = organizerServices.save(organizer);
+        Organizer savedOrganizer = organizerService.save(organizer);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedOrganizer);
     }
 
     @GetMapping
     public List<Organizer> getAllOrganizers() {
-        return organizerServices.findAll();
+        return organizerService.findAll();
     }
 
     @GetMapping("/{id}")
     public Organizer getOrganizerById(@PathVariable UUID id) {
-        return organizerServices.findById(id);
+        return organizerService.findById(id);
     }
 
     // PRECISA IMPLEMENTAR O PUT
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrganizer(@PathVariable Organizer id) {
-        organizerServices.delete(id);
+        organizerService.delete(id);
         return ResponseEntity.noContent().build();
     }
 

@@ -1,5 +1,6 @@
 package br.edu.ifpb.projeto.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,7 @@ public class Field implements Serializable {
     @ManyToOne
     private Modality modality;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "field")
     private List<FieldResponse> fieldResponses;
 

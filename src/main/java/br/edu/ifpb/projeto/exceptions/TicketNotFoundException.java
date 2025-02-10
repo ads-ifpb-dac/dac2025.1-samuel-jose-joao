@@ -1,8 +1,9 @@
 package br.edu.ifpb.projeto.exceptions;
 
-public class TicketNotFoundException extends RuntimeException
-{
-  public TicketNotFoundException(String message) {
-    super(message);
-  }
+import java.util.UUID;
+
+public class TicketNotFoundException extends RuntimeException {
+    public TicketNotFoundException(UUID message) {
+        super(String.format("Ticket not found: %s", message));
+    }
 }

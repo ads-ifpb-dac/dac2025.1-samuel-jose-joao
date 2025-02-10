@@ -4,10 +4,12 @@ import br.edu.ifpb.projeto.exceptions.FieldResponseNotFoundException;
 import br.edu.ifpb.projeto.models.FieldResponse;
 import br.edu.ifpb.projeto.repositories.FieldResponseRepository;
 import br.edu.ifpb.projeto.utils.GenericCRUDService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class FieldResponseService implements GenericCRUDService<FieldResponse> {
     private final FieldResponseRepository fieldResponseRepository;
 
@@ -20,10 +22,6 @@ public class FieldResponseService implements GenericCRUDService<FieldResponse> {
         return this.fieldResponseRepository.save(fieldResponse);
     }
 
-    @Override
-    public FieldResponse update(FieldResponse entity) {
-        return this.fieldResponseRepository.save(entity);
-    }
 
     @Override
     public void delete(FieldResponse entity) {

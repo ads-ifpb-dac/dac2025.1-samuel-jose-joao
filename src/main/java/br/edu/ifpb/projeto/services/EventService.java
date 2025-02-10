@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class EventServices implements GenericCRUDService<Event> {
+public class EventService implements GenericCRUDService<Event> {
     private final EventRepository eventRepository;
 
-    public EventServices(EventRepository eventRepository) {
+    public EventService(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
 
