@@ -1,105 +1,178 @@
-create table event
+CREATE TABLE event
 (
-    id          uuid not null primary key,
-    capacity    integer,
-    description varchar(255),
-    name        varchar(255)
+    id          UUID NOT NULL,
+    name        VARCHAR(255),
+    description VARCHAR(255),
+    capacity    INTEGER,
+    CONSTRAINT pk_event PRIMARY KEY (id)
 );
 
-create table event_info
+CREATE TABLE event_date
 (
-    id          uuid not null primary key,
-    address     varchar(255),
-    event_end   timestamp(6),
-    event_start timestamp(6)
+    event_id UUID NOT NULL,
+    date_id  UUID NOT NULL
 );
 
-create table event_date
+CREATE TABLE event_info
 (
-    event_id uuid not null references event,
-    date_id  uuid not null unique references event_info
+    id          UUID NOT NULL,
+    event_start TIMESTAMP WITHOUT TIME ZONE,
+    event_end   TIMESTAMP WITHOUT TIME ZONE,
+    address     VARCHAR(255),
+    CONSTRAINT pk_eventinfo PRIMARY KEY (id)
 );
 
-create table field_response
+CREATE TABLE event_organizers
 (
-    id       uuid not null primary key,
-    content  varchar(255),
-    field_id uuid
+    event_id      UUID NOT NULL,
+    organizers_id UUID NOT NULL
 );
 
-create table modality
+CREATE TABLE field
 (
-    id   uuid not null primary key,
-    type varchar(255)
+    id          UUID NOT NULL,
+    name        VARCHAR(255),
+    type        VARCHAR(255),
+    description VARCHAR(255),
+    modality_id UUID,
+    CONSTRAINT pk_field PRIMARY KEY (id)
 );
 
-create table field
+CREATE TABLE field_response
 (
-    id          uuid not null primary key,
-    description varchar(255),
-    name        varchar(255),
-    type        varchar(255),
-    modality_id uuid references modality,
-    response_id uuid unique references field_response
+    id       UUID NOT NULL,
+    content  VARCHAR(255),
+    field_id UUID,
+    CONSTRAINT pk_fieldresponse PRIMARY KEY (id)
 );
 
-create table field_response_field
+CREATE TABLE modality
 (
-    field_response_id uuid not null references field_response,
-    field_id          uuid not null unique references field
+    id   UUID NOT NULL,
+    type VARCHAR(255),
+    CONSTRAINT pk_modality PRIMARY KEY (id)
 );
 
-create table organizer
+CREATE TABLE modality_fields
 (
-    id uuid not null primary key
+    modality_id UUID NOT NULL,
+    fields_id   UUID NOT NULL
 );
 
-create table event_organizers
+CREATE TABLE organizer
 (
-    event_id      uuid not null references event,
-    organizers_id uuid not null references organizer
+    id UUID NOT NULL,
+    CONSTRAINT pk_organizer PRIMARY KEY (id)
 );
 
-create table organizer_events
+CREATE TABLE organizer_events
 (
-    organizer_id uuid not null references organizer,
-    events_id    uuid not null references event
+    organizer_id UUID NOT NULL,
+    events_id    UUID NOT NULL
 );
 
-create table ticket_package
+CREATE TABLE person
 (
-    id   uuid not null primary key,
-    type varchar(255)
+    id       UUID NOT NULL,
+    name     VARCHAR(255),
+    email    VARCHAR(255),
+    password VARCHAR(255),
+    cpf      VARCHAR(255),
+    birthday TIMESTAMP WITHOUT TIME ZONE,
+    CONSTRAINT pk_person PRIMARY KEY (id)
 );
 
-create table person
+CREATE TABLE ticket
 (
-    id       uuid not null primary key,
-    birthday timestamp(6),
-    cpf      varchar(255),
-    email    varchar(255),
-    name     varchar(255),
-    password varchar(255)
+    id            UUID NOT NULL,
+    event_id      UUID,
+    owner_id      UUID,
+    event_date_id UUID,
+    modality_id   UUID,
+    CONSTRAINT pk_ticket PRIMARY KEY (id)
 );
 
-create table ticket
+CREATE TABLE ticket_package
 (
-    id            uuid not null primary key,
-    event_id      uuid references event,
-    event_date_id uuid references event_info,
-    modality_id   uuid references modality,
-    owner_id      uuid constraint fk6gcp2n23bvkav1okxc6i1jt63 references person
+    id   UUID NOT NULL,
+    type VARCHAR(255),
+    CONSTRAINT pk_ticketpackage PRIMARY KEY (id)
 );
 
-create table ticket_response_list
+CREATE TABLE ticket_package_tickets
 (
-    ticket_id        uuid not null references ticket,
-    response_list_id uuid not null unique references field_response
+    ticket_package_id UUID NOT NULL,
+    tickets_id        UUID NOT NULL
 );
 
-create table ticket_package_tickets
+CREATE TABLE ticket_response_list
 (
-    ticket_package_id uuid not null references ticket_package,
-    tickets_id        uuid not null unique references ticket
+    ticket_id        UUID NOT NULL,
+    response_list_id UUID NOT NULL
 );
 
+ALTER TABLE event_date
+    ADD CONSTRAINT uc_event_date_date UNIQUE (date_id);
+
+ALTER TABLE modality_fields
+    ADD CONSTRAINT uc_modality_fields_fields UNIQUE (fields_id);
+
+ALTER TABLE ticket_package_tickets
+    ADD CONSTRAINT uc_ticket_package_tickets_tickets UNIQUE (tickets_id);
+
+ALTER TABLE ticket_response_list
+    ADD CONSTRAINT uc_ticket_response_list_responselist UNIQUE (response_list_id);
+
+ALTER TABLE field_response
+    ADD CONSTRAINT FK_FIELDRESPONSE_ON_FIELD FOREIGN KEY (field_id) REFERENCES field (id);
+
+ALTER TABLE field
+    ADD CONSTRAINT FK_FIELD_ON_MODALITY FOREIGN KEY (modality_id) REFERENCES modality (id);
+
+ALTER TABLE ticket
+    ADD CONSTRAINT FK_TICKET_ON_EVENT FOREIGN KEY (event_id) REFERENCES event (id);
+
+ALTER TABLE ticket
+    ADD CONSTRAINT FK_TICKET_ON_EVENTDATE FOREIGN KEY (event_date_id) REFERENCES event_info (id);
+
+ALTER TABLE ticket
+    ADD CONSTRAINT FK_TICKET_ON_MODALITY FOREIGN KEY (modality_id) REFERENCES modality (id);
+
+ALTER TABLE ticket
+    ADD CONSTRAINT FK_TICKET_ON_OWNER FOREIGN KEY (owner_id) REFERENCES person (id);
+
+ALTER TABLE event_date
+    ADD CONSTRAINT fk_evedat_on_event FOREIGN KEY (event_id) REFERENCES event (id);
+
+ALTER TABLE event_date
+    ADD CONSTRAINT fk_evedat_on_event_info FOREIGN KEY (date_id) REFERENCES event_info (id);
+
+ALTER TABLE event_organizers
+    ADD CONSTRAINT fk_eveorg_on_event FOREIGN KEY (event_id) REFERENCES event (id);
+
+ALTER TABLE event_organizers
+    ADD CONSTRAINT fk_eveorg_on_organizer FOREIGN KEY (organizers_id) REFERENCES organizer (id);
+
+ALTER TABLE modality_fields
+    ADD CONSTRAINT fk_modfie_on_field FOREIGN KEY (fields_id) REFERENCES field (id);
+
+ALTER TABLE modality_fields
+    ADD CONSTRAINT fk_modfie_on_modality FOREIGN KEY (modality_id) REFERENCES modality (id);
+
+ALTER TABLE organizer_events
+    ADD CONSTRAINT fk_orgeve_on_event FOREIGN KEY (events_id) REFERENCES event (id);
+
+ALTER TABLE organizer_events
+    ADD CONSTRAINT fk_orgeve_on_organizer FOREIGN KEY (organizer_id) REFERENCES organizer (id);
+
+ALTER TABLE ticket_package_tickets
+    ADD CONSTRAINT fk_ticpactic_on_ticket FOREIGN KEY (tickets_id) REFERENCES ticket (id);
+
+ALTER TABLE ticket_package_tickets
+    ADD CONSTRAINT fk_ticpactic_on_ticket_package FOREIGN KEY (ticket_package_id) REFERENCES ticket_package (id);
+
+ALTER TABLE ticket_response_list
+    ADD CONSTRAINT fk_ticreslis_on_field_response FOREIGN KEY (response_list_id) REFERENCES field_response (id);
+
+ALTER TABLE ticket_response_list
+    ADD CONSTRAINT fk_ticreslis_on_ticket FOREIGN KEY (ticket_id) REFERENCES ticket (id);

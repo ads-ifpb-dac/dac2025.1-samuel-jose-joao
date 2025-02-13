@@ -1,20 +1,20 @@
 package br.edu.ifpb.projeto.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class Modality implements Serializable {
 
     @Id
@@ -22,5 +22,8 @@ public class Modality implements Serializable {
     private UUID id;
 
     private String type;
+
+    @OneToMany(mappedBy = "modality")
+    private List<Field> fields;
 
 }

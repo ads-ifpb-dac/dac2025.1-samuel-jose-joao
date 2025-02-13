@@ -26,6 +26,7 @@ public class Field implements Serializable {
 
     private String description;
 
+    @JsonIgnore
     @ManyToOne
     private Modality modality;
 

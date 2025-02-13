@@ -1,3 +1,7 @@
 package br.edu.ifpb.projeto.dtos;
 
-public record FieldDTO(String description, String name, String type) {}
+import java.util.List;
+
+public record FieldDTO(String description, String name, String type) {
+
+}
