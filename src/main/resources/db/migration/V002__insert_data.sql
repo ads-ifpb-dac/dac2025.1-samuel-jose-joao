@@ -19,9 +19,9 @@ INSERT INTO modality (id, type) VALUES
                                     ('770e8400-e29b-41d4-a716-446655440001', 'Online');
 
 -- Inserção de dados na tabela field
-INSERT INTO field (id, description, name, type, modality_id) VALUES
-                                                                 ('880e8400-e29b-41d4-a716-446655440000', 'Nome do participante', 'Nome', 'Texto', '770e8400-e29b-41d4-a716-446655440000'),
-                                                                 ('880e8400-e29b-41d4-a716-446655440001', 'Email do participante', 'Email', 'Texto', '770e8400-e29b-41d4-a716-446655440001');
+INSERT INTO field (id, description, name, type, modality_id, is_unique, is_not_null) VALUES
+                                                                 ('880e8400-e29b-41d4-a716-446655440000', 'Nome do participante', 'Nome', 'Texto', '770e8400-e29b-41d4-a716-446655440000', TRUE, TRUE),
+                                                                 ('880e8400-e29b-41d4-a716-446655440001', 'Email do participante', 'Email', 'Texto', '770e8400-e29b-41d4-a716-446655440001', FALSE, FALSE);
 
 -- Inserção de dados na tabela organizer
 INSERT INTO organizer (id) VALUES

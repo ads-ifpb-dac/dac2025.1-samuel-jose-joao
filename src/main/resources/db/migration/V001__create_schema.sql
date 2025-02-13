@@ -34,6 +34,8 @@ CREATE TABLE field
     name        VARCHAR(255),
     type        VARCHAR(255),
     description VARCHAR(255),
+    is_unique   BOOLEAN,
+    is_not_null BOOLEAN,
     modality_id UUID,
     CONSTRAINT pk_field PRIMARY KEY (id)
 );
@@ -51,12 +53,6 @@ CREATE TABLE modality
     id   UUID NOT NULL,
     type VARCHAR(255),
     CONSTRAINT pk_modality PRIMARY KEY (id)
-);
-
-CREATE TABLE modality_fields
-(
-    modality_id UUID NOT NULL,
-    fields_id   UUID NOT NULL
 );
 
 CREATE TABLE organizer
@@ -114,9 +110,6 @@ CREATE TABLE ticket_response_list
 ALTER TABLE event_date
     ADD CONSTRAINT uc_event_date_date UNIQUE (date_id);
 
-ALTER TABLE modality_fields
-    ADD CONSTRAINT uc_modality_fields_fields UNIQUE (fields_id);
-
 ALTER TABLE ticket_package_tickets
     ADD CONSTRAINT uc_ticket_package_tickets_tickets UNIQUE (tickets_id);
 
@@ -152,12 +145,6 @@ ALTER TABLE event_organizers
 
 ALTER TABLE event_organizers
     ADD CONSTRAINT fk_eveorg_on_organizer FOREIGN KEY (organizers_id) REFERENCES organizer (id);
-
-ALTER TABLE modality_fields
-    ADD CONSTRAINT fk_modfie_on_field FOREIGN KEY (fields_id) REFERENCES field (id);
-
-ALTER TABLE modality_fields
-    ADD CONSTRAINT fk_modfie_on_modality FOREIGN KEY (modality_id) REFERENCES modality (id);
 
 ALTER TABLE organizer_events
     ADD CONSTRAINT fk_orgeve_on_event FOREIGN KEY (events_id) REFERENCES event (id);

@@ -1,8 +1,7 @@
 package br.edu.ifpb.projeto.controllers;
 
 
-import br.edu.ifpb.projeto.dtos.FieldDTO;
-import br.edu.ifpb.projeto.dtos.FieldResponseListDTO;
+import br.edu.ifpb.projeto.dtos.BuyTicketDTO;
 import br.edu.ifpb.projeto.dtos.TicketDTO;
 import br.edu.ifpb.projeto.models.FieldResponse;
 import br.edu.ifpb.projeto.models.Ticket;
@@ -39,13 +38,11 @@ public class TicketController {
 
     @PostMapping("/")
     public ResponseEntity<Ticket> createTicket(@RequestBody TicketDTO ticketDTO) {
-        var person = personService.findById(ticketDTO.ownerID());
         var eventInfo = eventInfoService.findById(ticketDTO.eventInfoID());
         var event = eventService.findById(ticketDTO.eventId());
         var modality = modalityService.findById(ticketDTO.modalityId());
         var ticket = new Ticket();
         var responses = new ArrayList<FieldResponse>();
-        ticket.setOwner(person);
         ticket.setEvent(event);
         ticket.setEventDate(eventInfo);
         ticket.setModality(modality);
@@ -56,10 +53,11 @@ public class TicketController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Ticket> buyTicket(@PathVariable("id") UUID id, @RequestBody FieldResponseListDTO fieldResponseDTO) {
+    public ResponseEntity<Ticket> buyTicket(@PathVariable("id") UUID id, @RequestBody BuyTicketDTO buyTicketDTO) {
+        var person = personService.findById(buyTicketDTO.owner_id());
         var ticket = ticketService.findById(id);
         var responses = new ArrayList<FieldResponse>();
-        var fields = fieldResponseDTO.fields();
+        var fields = buyTicketDTO.fields();
 
         for (var field : fields) {
             for (var modalField : ticket.getModality().getFields()) {
@@ -71,7 +69,8 @@ public class TicketController {
                 }
             }
         }
-
+        ticket.setOwner(person);
+        ticket.setId(id);
         ticket.setResponseList(responses);
         var ticketResponse = ticketService.save(ticket);
 

@@ -26,6 +26,10 @@ public class Field implements Serializable {
 
     private String description;
 
+    private Boolean isUnique;
+
+    private Boolean isNotNull;
+
     @JsonIgnore
     @ManyToOne
     private Modality modality;

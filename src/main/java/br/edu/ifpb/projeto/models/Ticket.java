@@ -24,7 +24,7 @@ public class Ticket implements Serializable {
     @ManyToOne
     private Event event;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Person owner;
 
     @ManyToOne
