@@ -23,7 +23,7 @@ public class Modality implements Serializable {
 
     private String type;
 
-    @OneToMany(mappedBy = "modality")
+    @OneToMany(mappedBy = "modality", cascade = CascadeType.ALL)
     private List<Field> fields;
 
 }

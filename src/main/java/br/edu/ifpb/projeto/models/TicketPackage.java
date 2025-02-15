@@ -1,5 +1,7 @@
 package br.edu.ifpb.projeto.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,8 +21,8 @@ public class TicketPackage implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToMany
-    private List<Ticket> tickets;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<PromoTicket> ticketOptions;
 
     private String type;
 

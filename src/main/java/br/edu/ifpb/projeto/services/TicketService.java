@@ -19,6 +19,11 @@ public class TicketService implements GenericCRUDService<Ticket> {
         this.repository = repository;
     }
 
+    public List<Ticket> findTicket(UUID event, UUID eventDate, UUID modality){
+        return this.repository.findTicket(event, eventDate, modality);
+    }
+
+
     @Override
     public Ticket findById(UUID id) {
         return this.repository.findById(id).orElseThrow(() -> new TicketNotFoundException(id));
