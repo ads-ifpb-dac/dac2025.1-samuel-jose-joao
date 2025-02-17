@@ -54,21 +54,10 @@ public class TicketController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Ticket> buyTicket(@PathVariable("id") UUID id, @RequestBody BuyTicketDTO buyTicketDTO) {
+
         var person = personService.findById(buyTicketDTO.owner_id());
         var ticket = ticketService.findById(id);
-        var responses = new ArrayList<FieldResponse>();
-        var fields = buyTicketDTO.fields();
-
-        for (var field : fields) {
-            for (var modalField : ticket.getModality().getFields()) {
-                if (field.fieldID().equals(modalField.getId())) {
-                    var response = new FieldResponse();
-                    response.setField(modalField);
-                    response.setContent(field.response());
-                    responses.add(response);
-                }
-            }
-        }
+        var responses = TicketService.fillTicket(buyTicketDTO.fields(), ticket.getModality());
         ticket.setOwner(person);
         ticket.setId(id);
         ticket.setResponseList(responses);

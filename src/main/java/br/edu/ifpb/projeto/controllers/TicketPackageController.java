@@ -9,8 +9,10 @@ import br.edu.ifpb.projeto.models.PromoTicket;
 import br.edu.ifpb.projeto.models.Ticket;
 import br.edu.ifpb.projeto.models.TicketPackage;
 import br.edu.ifpb.projeto.services.*;
+import jakarta.transaction.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,13 +26,15 @@ public class TicketPackageController {
     private final ModalityService modalityService;
     private final EventInfoService eventInfoService;
     private final TicketService ticketService;
+    private final PersonService personService;
 
-    public TicketPackageController(TicketPackageService ticketPackageService, EventService eventService, ModalityService modalityService, EventInfoService eventInfoService, TicketService ticketService) {
+    public TicketPackageController(TicketPackageService ticketPackageService, EventService eventService, ModalityService modalityService, EventInfoService eventInfoService, TicketService ticketService, PersonService personService) {
         this.ticketPackageService = ticketPackageService;
         this.eventService = eventService;
         this.modalityService = modalityService;
         this.eventInfoService = eventInfoService;
         this.ticketService = ticketService;
+        this.personService = personService;
     }
 
     @PostMapping("/")
@@ -51,11 +55,22 @@ public class TicketPackageController {
         return ticketPackageService.save(ticketPackage);
     }
 
-    /*@PostMapping("/buy/{id}")
-    public TicketPackage buy(@PathVariable UUID id, @RequestBody BuyPackageDTO buyPackageDTO) {
+    @PutMapping("/buy/{id}")
+    public List<Ticket> buy(@PathVariable UUID id, @RequestBody BuyPackageDTO buyPackageDTO) {
+        var tickets = new ArrayList<Ticket>();
+        var personList = buyPackageDTO.ticketsInfo().stream().iterator();
         var ticketPackage = ticketPackageService.findById(id);
-        for (BuyTicketDTO ticketDTO: buyPackageDTO.ticketsInfo()){
-
+        for (var ticketOption: ticketPackage.getTicketOptions()){
+            var info = personList.next();
+            var ticket = this.ticketService.findTicket(ticketOption.getEvent().getId(), ticketOption.getEventDate().getId(), ticketOption.getModality().getId());
+            var person = personService.findById(info.owner_id());
+            var responses = TicketService.fillTicket(info.fields(), ticketOption.getModality());
+            ticket.setOwner(person);
+            ticket.setResponseList(responses);
+            var savedTicket = this.ticketService.save(ticket);
+            tickets.add(savedTicket);
         }
-    }*/
+
+        return tickets;
+    }
 }

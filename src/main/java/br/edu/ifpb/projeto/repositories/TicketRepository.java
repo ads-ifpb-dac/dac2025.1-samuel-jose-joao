@@ -10,6 +10,5 @@ import java.util.UUID;
 
 public interface TicketRepository extends JpaRepository<Ticket, UUID> {
 
-    @Query("SELECT T FROM Ticket T where T.event.id = ?1 AND  t.eventDate.id = ?2 AND T.modality.id = ?3")
-    List<Ticket> findTicket(UUID event , UUID eventDate, UUID modality);
+    List<Ticket> findByEvent_IdAndEventDate_IdAndModality_IdAndOwnerIsNull(UUID event, UUID eventDate, UUID modality);
 }

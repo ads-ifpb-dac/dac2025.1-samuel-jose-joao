@@ -23,6 +23,9 @@ public class Modality implements Serializable {
 
     private String type;
 
+    @ManyToOne
+    private Event event;
+
     @OneToMany(mappedBy = "modality", cascade = CascadeType.ALL)
     private List<Field> fields;
 
