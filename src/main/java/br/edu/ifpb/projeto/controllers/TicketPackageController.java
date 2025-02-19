@@ -9,7 +9,7 @@ import br.edu.ifpb.projeto.models.PromoTicket;
 import br.edu.ifpb.projeto.models.Ticket;
 import br.edu.ifpb.projeto.models.TicketPackage;
 import br.edu.ifpb.projeto.services.*;
-import jakarta.transaction.Transactional;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -56,11 +56,14 @@ public class TicketPackageController {
     }
 
     @PutMapping("/buy/{id}")
-    public List<Ticket> buy(@PathVariable UUID id, @RequestBody BuyPackageDTO buyPackageDTO) {
+    public ResponseEntity<List<Ticket>> buy(@PathVariable UUID id, @RequestBody BuyPackageDTO buyPackageDTO) {
         var tickets = new ArrayList<Ticket>();
         var personList = buyPackageDTO.ticketsInfo().stream().iterator();
         var ticketPackage = ticketPackageService.findById(id);
         for (var ticketOption: ticketPackage.getTicketOptions()){
+            if(!personList.hasNext()) {
+                return ResponseEntity.notFound().build();
+            }
             var info = personList.next();
             var ticket = this.ticketService.findTicket(ticketOption.getEvent().getId(), ticketOption.getEventDate().getId(), ticketOption.getModality().getId());
             var person = personService.findById(info.owner_id());
@@ -71,6 +74,6 @@ public class TicketPackageController {
             tickets.add(savedTicket);
         }
 
-        return tickets;
+        return ResponseEntity.ok(tickets);
     }
 }
