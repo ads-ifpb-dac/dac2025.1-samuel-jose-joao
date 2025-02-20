@@ -8,4 +8,4 @@ services:
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: tickets
     ports:
-      - "5434:5432"
+      - "5432:5432"
