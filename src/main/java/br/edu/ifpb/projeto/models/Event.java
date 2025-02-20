@@ -2,6 +2,7 @@ package br.edu.ifpb.projeto.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -23,7 +24,7 @@ public class Event implements Serializable {
 
     private String description;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<EventInfo> date;
 
     private Integer capacity;
