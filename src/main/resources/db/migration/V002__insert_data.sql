@@ -40,7 +40,7 @@ INSERT INTO ticket (id, event_id, owner_id, event_date_id, modality_id) VALUES
 
 /*
 -- Inserção na tabela promo_ticket
-INSERT INTO promo_ticket (id, modality_id, event_id, event_date_id) VALUES
+INSERT INTO promo_ticket (id, modalityId, eventId, event_date_id) VALUES
                                                                         (1, '770e8400-e29b-41d4-a716-446655440000', '550e8400-e29b-41d4-a716-446655440000', '660e8400-e29b-41d4-a716-446655440000'),
                                                                         (2, '770e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440001', '660e8400-e29b-41d4-a716-446655440001');
 

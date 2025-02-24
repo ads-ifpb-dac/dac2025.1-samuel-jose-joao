@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static br.edu.ifpb.projeto.services.TicketService.fillTicket;
+
 @RestController
 @RequestMapping("/api/ticket")
 public class TicketController {
@@ -21,8 +23,6 @@ public class TicketController {
     private final EventInfoService eventInfoService;
     private final EventService eventService;
     private final PersonService personService;
-    private final FieldService fieldService;
-    private final FieldResponseService fieldResponseService;
     private final ModalityService modalityService;
     private final EmailService emailService;
 
@@ -32,8 +32,6 @@ public class TicketController {
         this.eventInfoService = eventInfoService;
         this.eventService = eventService;
         this.personService = personService;
-        this.fieldResponseService = fieldResponseService;
-        this.fieldService = fieldService;
         this.modalityService = modalityService;
         this.emailService = emailService;
     }
@@ -58,9 +56,9 @@ public class TicketController {
         var person = personService.findById(buyTicketDTO.owner_id());
         var ticket = ticketService.findById(id);
         if(ticket.getOwner().getId() != null){
-            return new ResponseEntity<>("Ticket already purshased", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Ticket already purchased", HttpStatus.CONFLICT);
         }
-        var responses = TicketService.fillTicket(buyTicketDTO.fields(), ticket.getModality());
+        var responses = fillTicket(buyTicketDTO.fields(), ticket.getModality());
         ticket.setOwner(person);
         ticket.setId(id);
         ticket.setResponseList(responses);
